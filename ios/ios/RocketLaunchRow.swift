@@ -28,7 +28,7 @@ extension RocketLaunchRow {
 
     private  var launchColor: Color {
         if let isSuccess = rocketLaunch.launchSuccess {
-            return isSuccess.boolValue ? Color.green : Color.shared
+            return isSuccess.boolValue ? Color.green : Color.red
         } else {
             return Color.gray
         }
