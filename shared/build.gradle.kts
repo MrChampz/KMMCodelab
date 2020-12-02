@@ -4,13 +4,21 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
+    id("kotlin-android-extensions")
     id("com.squareup.sqldelight")
+}
+
+repositories {
+    gradlePluginPortal()
+    google()
+    jcenter()
+    mavenCentral()
 }
 
 kotlin {
     val coroutinesVersion = "1.4.2"
     val serializationVersion = "1.0.1"
-    val ktorVersion = "1.4.3"
+    val ktorVersion = "1.4.2"
     val sqlDelightVersion: String by project
 
     android()
@@ -21,12 +29,13 @@ kotlin {
             }
         }
     }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
                 implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
             }
@@ -69,6 +78,12 @@ android {
     }
 }
 
+sqldelight {
+    database("AppDatabase") {
+        packageName = "com.example.kmmcodelab.shared.cache"
+    }
+}
+
 val packForXcode by tasks.creating(Sync::class) {
     group = "build"
     val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
@@ -83,9 +98,3 @@ val packForXcode by tasks.creating(Sync::class) {
 }
 
 tasks.getByName("build").dependsOn(packForXcode)
-
-sqldelight {
-    database("AppDatabase") {
-        packageName = "com.example.kmmcodelab.shared.cache"
-    }
-}
